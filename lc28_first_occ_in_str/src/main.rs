@@ -33,8 +33,7 @@ impl Solution {
     pub fn str_str(haystack: String, needle: String) -> i32 {
         let i: Option<usize> = haystack.find(&needle);
         if i.is_some() {
-            let j: i32 = i32::try_from(i.unwrap()).unwrap();
-            return j;
+            return i32::try_from(i.unwrap()).unwrap();
         } else {
             return -1;
         }
