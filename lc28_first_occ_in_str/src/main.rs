@@ -41,9 +41,10 @@ impl Solution {
         let shift: usize = 0;
         let i: usize = 0;
 
-        // Hashing in the needle with it's indices- SKIP FOR NOW; COLLISIONS MAKES IT HARDER
-        // let mut needle_hash: HashMap<usize, char> = HashMap::new();
-
+        /*
+        Hashing in the needle with it's indices- SKIP FOR NOW; COLLISIONS MAKES IT HARDER
+        Just make a simple hashset to get O(1) on the contains
+        */
         let mut needle_hash = HashSet::new();
         for c in needle.chars() {
             needle_hash.insert(c);
