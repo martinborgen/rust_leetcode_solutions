@@ -26,15 +26,14 @@ Constraints:
     1 <= haystack.length, needle.length <= 104
     haystack and needle consist of only lowercase English characters.
 */
-use num_traits::cast::AsPrimitive;
-
+use std::convert::TryFrom;
 struct Solution{}
 
 impl Solution {
     pub fn str_str(haystack: String, needle: String) -> i32 {
         let i: Option<usize> = haystack.find(&needle);
         if i.is_some() {
-            let j: i32 = i.unwrap().as_();
+            let j: i32 = i32::try_from(i.unwrap()).unwrap();
             return j;
         } else {
             return -1;
@@ -43,6 +42,6 @@ impl Solution {
 }
 
 fn main() {
-    let res = Solution::str_str(String::from("sadbutsad"), String::from("basd"));
+    let res = Solution::str_str(String::from("sadbutsad"), String::from("but"));
     println!("{res}");
 }
