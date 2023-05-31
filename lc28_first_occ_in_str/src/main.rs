@@ -26,19 +26,18 @@ Constraints:
     1 <= haystack.length, needle.length <= 104
     haystack and needle consist of only lowercase English characters.
 */
-use num_traits::cast::AsPrimitive;
+// use num_traits::cast::AsPrimitive;
 
 struct Solution{}
 
 impl Solution {
     pub fn str_str(haystack: String, needle: String) -> i32 {
-        let i: Option<usize> = haystack.find(&needle);
-        if i.is_some() {
-            let j: i32 = i.unwrap().as_();
-            return j;
-        } else {
-            return -1;
-        }
+        // Idea is to use Boyer-Moore 
+        let needle_it = needle.chars();
+        let haystack_it = haystack.chars();
+        let needle_len = needle.chars().count();
+        let tst: i32 = i32::try_from(needle_len).unwrap();
+        return tst;
     }
 }
 
