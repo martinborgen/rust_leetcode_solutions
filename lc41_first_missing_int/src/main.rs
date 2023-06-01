@@ -1,31 +1,50 @@
-use std::collections::HashSet;
+// use std::collections::HashSet;
 
 impl Solution {
     pub fn first_missing_positive(nums: Vec<i32>) -> i32 {
-        let mut nums_hashed = HashSet::with_capacity(nums.len());
         let mut min: i32 = i32::MAX; // to ensure we idenify min
         let mut max: i32 = 0;        // we're only interested in max > 0
+        let mut found = 0;
+        
+        for i in 0..nums.len() {
+            let num = nums[i];
+            
+            if num < 1 {
+                continue;
+            }
 
-        for num in nums {
-            if num > 0 && num < min {
+            if num < min {
                 min = num;
             } 
-            if num > 0 && num > max {
+            // separate if:s because if only 1 num > 0 => num is both min and max
+            if num > max {
                 max = num;
             }
-            nums_hashed.insert(num);
+
+            found += 1;
         }
 
+        // if no min found, min default is INT_MAX
         if min > 1 {
             return 1;
         }
 
-        for i in (min-1)..max {
-            // Shifting i one down to avoid overflow when max == INT_MAX
-            if !nums_hashed.contains(&(i+1)) {
-                return i+1;
+        let mut nums_found = vec![0; (found) as usize];
+
+        for num in nums {
+            if num < 1 || num > found {
+                continue;
+            }
+            // We already know min is one here
+            nums_found[(num - 1) as usize] = num;
+        }
+
+        for i in 0..nums_found.len() {
+            if nums_found[i] == 0 {
+                return (i+1) as i32;
             }
         }
+
         return max + 1;
     }
 }
@@ -39,4 +58,5 @@ fn main() {
     assert_eq!(Solution::first_missing_positive(vec![-1,-7,-2,-5]), 1);
     assert_eq!(Solution::first_missing_positive(vec![]), 1);
     assert_eq!(Solution::first_missing_positive(vec![1,2,3,10,2147483647,9]), 4);
+    assert_eq!(Solution::first_missing_positive(vec![1, 2, 3, 3, 7, 8]), 4);
 }
