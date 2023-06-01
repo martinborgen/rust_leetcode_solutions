@@ -35,8 +35,8 @@ impl Solution {
         }
 
         // Implements a BFS search
-        let mut cell_q = VecDeque::new();
-        let mut visited = HashSet::new();
+        let mut cell_q = VecDeque::with_capacity(n*n);
+        let mut visited = HashSet::with_capacity(n*n);
         cell_q.push_back(Cell{pos:(0, 0), dist:1});
 
         while !cell_q.is_empty() {
@@ -58,7 +58,7 @@ impl Solution {
 
     /// Returns the adjecant cells.
     fn get_adjacents(grid: &Vec<Vec<i32>>, origin: &Cell, visited: &HashSet<Cell>) -> Vec<Cell> {
-        let mut out: Vec<Cell> = Vec::new();
+        let mut out: Vec<Cell> = Vec::with_capacity(8);
         let n = grid[0].len() - 1; // length of matrix side, adjusted to match 0-indexing
 
         let r0 = origin.pos.0 - 1 * usize::try_from(origin.pos.0 > 0).unwrap();
