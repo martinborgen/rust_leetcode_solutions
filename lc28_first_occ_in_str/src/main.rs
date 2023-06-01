@@ -27,8 +27,9 @@ Constraints:
     haystack and needle consist of only lowercase English characters.
 */
 // use num_traits::cast::AsPrimitive;
-// use std::collections::HashMap;
+use std::collections::HashMap;
 use std::collections::HashSet;
+use std::collections::hash_map::Entry;
 
 struct Solution{}
 
@@ -38,23 +39,32 @@ impl Solution {
         let needle_vec: Vec<char> = needle.chars().collect();
         let haystack_vec: Vec<char> = haystack.chars().collect();
         let needle_len: usize = needle.chars().count();
-        let shift: usize = 0;
-        let i: usize = 0;
+        let haystack_len = haystack.chars().count();
+        let mut shift: usize = 0;
+        let mut i: usize = needle_len;
 
-        /*
-        Hashing in the needle with it's indices- SKIP FOR NOW; COLLISIONS MAKES IT HARDER
-        Just make a simple hashset to get O(1) on the contains
-        */
-        let mut needle_hash = HashSet::new();
-        for c in needle.chars() {
-            needle_hash.insert(c);
+        // Hashing in the needle with it's indices. 
+        // Each character in needle will have it's index stored in a vector. 
+        // We loop through needle backwards to get the positions sorted from the rear
+        let mut needle_hash: HashMap<char, Vec<usize>> = HashMap::new();
+        for (i, c) in needle.chars().rev().enumerate() {
+            match needle_hash.entry(c) {
+                Entry::Vacant(e) => {e.insert(vec![i]);}
+                Entry::Occupied(mut e) => {e.get_mut().push(i);} 
+            }
         }
 
-        while true {
-            let haystack_char: char = haystack_vec[needle_len];
+        loop {
+            let haystack_char: char = haystack_vec[needle_len + shift];
             if haystack_char != needle_vec[needle_vec.len() -1] {
-                if needle_hash.contains(&haystack_char) {
-                    
+                if needle_hash.contains_key(&haystack_char) {
+                    // exact expression here is still WIP
+                    let next_i = needle_hash.get(&haystack_char).unwrap().first().unwrap();
+                } else {
+                    shift += needle_len;
+                    if shift > haystack_len {
+                        return -1;
+                    }
                 }
             }
             
