@@ -18,6 +18,10 @@ impl Solution {
                 if area > largest {
                     largest = area;
                 }
+
+                if hj >= hi {
+                    break;
+                }
             }
         }
         return largest;
@@ -29,5 +33,5 @@ struct Solution;
 fn main() {
     assert_eq!(Solution::max_area(vec![1,8,6,2,5,4,8,3,7]), 49);
     assert_eq!(Solution::max_area(vec![1,1]), 1);
-    assert_eq!(Solution::max_area(vec![10000; 100000]), 1000000000);
+    assert_eq!(Solution::max_area(vec![10000; 100000]), 999990000);
 }
