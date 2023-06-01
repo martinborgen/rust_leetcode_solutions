@@ -45,12 +45,11 @@ impl Solution {
 
         // Hashing in the needle with it's indices. 
         // Each character in needle will have it's index stored in a vector. 
-        // We loop through needle backwards to get the positions sorted from the rear
         let mut needle_hash: HashMap<char, Vec<usize>> = HashMap::new();
-        for (i, c) in needle.chars().rev().enumerate() {
+        for (i, c) in needle.chars().enumerate() {
             match needle_hash.entry(c) {
                 Entry::Vacant(e) => {e.insert(vec![i]);}
-                Entry::Occupied(mut e) => {e.get_mut().push(i);} 
+                Entry::Occupied(mut e) => {e.get_mut().insert(0, i);} 
             }
         }
 
@@ -76,6 +75,6 @@ impl Solution {
 }
 
 fn main() {
-    let res = Solution::str_str(String::from("sadbutsad"), String::from("basd"));
+    let res = Solution::str_str(String::from("sadbutsad"), String::from("basda"));
     println!("{res}");
 }
