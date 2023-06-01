@@ -45,22 +45,21 @@ impl Solution {
                 return current.dist;
             }
             
-            let adjs = Self::get_adjacents(&grid, &current);
+            let adjs = Self::get_adjacents(&grid, &current, &visited);
             visited.insert(current);
             for adj in adjs {
                 if !visited.contains(&adj) {
                     cell_q.push_back(adj);
                 }
             }
-
         }
         return -1;
     }
 
     /// Returns the adjecant cells.
-    fn get_adjacents(grid: &Vec<Vec<i32>>, origin: &Cell) -> Vec<Cell> {
+    fn get_adjacents(grid: &Vec<Vec<i32>>, origin: &Cell, visited: &HashSet<Cell>) -> Vec<Cell> {
         let mut out: Vec<Cell> = Vec::new();
-        let n = grid[0].len() - 1; // lenght of matrix side, adjusted to match 0-indexing
+        let n = grid[0].len() - 1; // length of matrix side, adjusted to match 0-indexing
 
         let r0 = origin.pos.0 - 1 * usize::try_from(origin.pos.0 > 0).unwrap();
         let r1 = min(origin.pos.0 + 1, n);
@@ -71,8 +70,9 @@ impl Solution {
         for r in r0..r1+1 {
             for c in c0..c1+1 {
                 let adj = grid[r][c];
-                if adj == 0 {
-                    out.push(Cell{pos: (r, c), dist: origin.dist+1});
+                let pot = Cell{pos: (r, c), dist: origin.dist+1};
+                if adj == 0 && !visited.contains(&pot) && pot != *origin{
+                    out.push(pot);
                 }
             }
         }
