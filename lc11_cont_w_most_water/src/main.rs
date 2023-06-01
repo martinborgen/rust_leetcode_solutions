@@ -43,3 +43,22 @@ fn main() {
     assert_eq!(Solution::max_area(vec![1,832,6,2,5,4,8,3,7,1,2,4,4,6,456,23,76,3,32,23,4,5,5,64,546,7,2,345,123,74,432]), 12558);
     assert_eq!(Solution::max_area(vec![1,832,6,2,5,4,8,3,10000,1,2,4,4,6,456,23,76,3,32,23,4,5,5,64,546,7,2,345,123,74,432,1,2,3,2,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,10000,3]), 600000);
 }
+
+// Better slution idea here:
+// impl Solution {
+//     pub fn max_area(height: Vec<i32>) -> i32 {
+//         let (mut start, mut end) = (0, height.len() - 1);
+//         let mut biggest_area = 0;
+//         while start != end {
+//             let area = (end - start) as i32 * i32::min(height[start], height[end]);
+//             if height[start] > height[end] {
+//                 end -= 1;
+//             }
+//             else {
+//                 start += 1;
+//             }
+//             biggest_area = i32::max(area, biggest_area)
+//         }
+//         biggest_area
+//     }
+// }
