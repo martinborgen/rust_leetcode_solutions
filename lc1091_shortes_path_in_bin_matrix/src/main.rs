@@ -7,7 +7,7 @@ use std::collections::{VecDeque, HashSet};
 use std::convert::TryFrom;
 use std::hash::{Hash, Hasher};
 
-#[derive(Eq)]
+#[derive(Eq, Copy, Clone)]
 struct Cell {
     pos: (usize, usize),
     dist: i32,
@@ -38,7 +38,7 @@ impl Solution {
         let mut cell_q = VecDeque::with_capacity(n*n);
         let mut visited = HashSet::with_capacity(n*n);
         cell_q.push_back(Cell{pos:(0, 0), dist:1});
-
+        visited.insert(Cell{pos:(0, 0), dist:1});
         while !cell_q.is_empty() {
             let current = cell_q.pop_front().unwrap();
             if current.pos.0 == n-1 && current.pos.1 == n-1 {
@@ -46,10 +46,10 @@ impl Solution {
             }
             
             let adjs = Self::get_adjacents(&grid, &current, &visited);
-            visited.insert(current);
             for adj in adjs {
                 if !visited.contains(&adj) {
                     cell_q.push_back(adj);
+                    visited.insert(adj.clone());
                 }
             }
         }
