@@ -54,16 +54,18 @@ impl Solution {
         }
 
         loop {
-            let haystack_char: char = haystack_vec[needle_len + shift];
+            let haystack_char: char = haystack_vec[needle_len - 1 + shift];
             if haystack_char != needle_vec[needle_vec.len() -1] {
                 if needle_hash.contains_key(&haystack_char) {
                     // exact expression here is still WIP
                     let next_i = needle_hash.get(&haystack_char).unwrap().first().unwrap();
                 } else {
-                    shift += needle_len;
-                    if shift > haystack_len {
+                    if shift + needle_len > haystack_len - 1 {
                         return -1;
+                    } else {
+                        shift += needle_len;
                     }
+                    
                 }
             }
             
