@@ -56,7 +56,7 @@ impl Solution {
                 a_opt = a.next.take(); // take is the method that allows a_opt to not keep ownership of a?
                 b_opt = Some(b);       // re-Some b as is
                 *out_next = Some(a);   // re-Some a now that a.next is taken. 
-            } else { // vice-versa
+            } else {                   // vice-versa
                 a_opt = Some(a);
                 b_opt = b.next.take();
                 *out_next = Some(b);
@@ -73,11 +73,35 @@ impl Solution {
 
 struct Solution;
 
-// fn list_string(list: Option<Box<ListNode>>) -> String {
-//     let mut out = list.iter();
-//     out;
-// }
+fn list_string(list: Option<Box<ListNode>>) -> String {
+    let mut out = String::new();
+    out.insert(0, '[');
+    let mut curr_opt = &list;
+    
+    while curr_opt.is_some() {
+        let curr = curr_opt.as_ref().unwrap();
+        out.push_str(&curr.val.to_string());
+        out.push(',');
+        curr_opt = &curr.next;
+    }
+    out.pop();
+    out.push(']');
+
+    return out;
+}
+
+fn linked_list_from_vec(vec: Vec<i32>) -> Option<Box<ListNode>> {
+    let mut head: Option<Box<ListNode>> = None;
+    let mut out_next = &mut head;
+    for val in vec {
+        *out_next = Some(Box::new(ListNode::new(val)));
+        out_next = &mut out_next.as_mut().unwrap().next;
+    }
+    head
+}
 
 fn main() {
-    println!("Hello world!");
+    assert_eq!(list_string(Solution::merge_k_lists(vec![linked_list_from_vec(vec![1,4,5]),
+                                            linked_list_from_vec(vec![1,3,4]),
+                                            linked_list_from_vec(vec![2,6])])), String::from("[1,1,2,3,4,4,5,6]"));
 }
