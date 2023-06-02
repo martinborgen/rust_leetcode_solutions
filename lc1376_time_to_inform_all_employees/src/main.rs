@@ -29,18 +29,37 @@ The tree structure of the employees in the company is shown.
 impl Solution {
     pub fn num_of_minutes(n: i32, head_id: i32, manager: Vec<i32>, inform_time: Vec<i32>) -> i32 {
         let mut largest = 0;
+        let mut time_cache: Vec<i32> = vec![-1; n as usize];
+        time_cache[head_id as usize] = inform_time[head_id as usize];
+        let mut stack: Vec<usize> = Vec::new(); // Stack holds index and time from lowest employee
 
         for i in 0..n as usize{
-            let mut time = 0;
-            let mut man = manager[i];
+            if time_cache[i] >= 0 {continue;}
 
-            while man >= 0 {
+            let mut time = inform_time[i];
+            let mut man = manager[i];
+            stack.push(i);
+            loop {
+                stack.push(man as usize);
+                if time_cache[man as usize] >= 0 {
+                    time += time_cache[man as usize];
+                    break;
+                }
                 time += inform_time[man as usize];
                 man = manager[man as usize];
             }
+
+            let mut time_counting_down = inform_time[stack.pop().unwrap()]; // WEIRD
+            while !stack.is_empty() {
+                let j = stack.pop().unwrap();
+                time_counting_down += inform_time[j];
+                time_cache[j] = time_counting_down;
+            }
+
             if time > largest {
                 largest = time;
             }
+            time_cache[i] = time;
         }
         return largest;
     }
@@ -53,4 +72,5 @@ fn main() {
     assert_eq!(Solution::num_of_minutes(6, 2, vec![2,2,-1,2,2,2], vec![0,0,1,0,0,0]), 1);
     assert_eq!(Solution::num_of_minutes(10, 0, vec![-1, 0, 1, 2, 3, 4, 5, 6, 7, 8], vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 0]), 36);
     assert_eq!(Solution::num_of_minutes(15, 0, vec![-1,0,0,1,1,2,2,3,3,4,4,5,5,6,6], vec![1,1,1,1,1,1,1,0,0,0,0,0,0,0,0]), 3);
+    assert_eq!(Solution::num_of_minutes(11, 4, vec![5,9,6,10,-1,8,9,1,9,3,4], vec![0,213,0,253,686,170,975,0,261,309,337]),2560);
 }
