@@ -31,24 +31,24 @@ impl Solution {
         let mut largest = 0;
         let mut time_cache: Vec<i32> = vec![-1; n as usize];
         time_cache[head_id as usize] = inform_time[head_id as usize];
-        let mut stack: Vec<usize> = Vec::new(); // Stack holds index and time from lowest employee
+        let mut stack: Vec<usize> = Vec::new();
 
         for i in 0..n as usize{
             if time_cache[i] >= 0 {continue;}
 
             let mut time = inform_time[i];
-            let mut man = manager[i];
+            let mut man = manager[i] as usize;
             let mut time_counting_down = 0;
             stack.push(i);
             loop {
-                if time_cache[man as usize] >= 0 {
-                    time += time_cache[man as usize];
-                    time_counting_down += time_cache[man as usize];
+                if time_cache[man] >= 0 {
+                    time += time_cache[man];
+                    time_counting_down += time_cache[man];
                     break;
                 }
-                stack.push(man as usize);
-                time += inform_time[man as usize];
-                man = manager[man as usize];
+                stack.push(man);
+                time += inform_time[man];
+                man = manager[man] as usize;
             }
 
             while !stack.is_empty() {
