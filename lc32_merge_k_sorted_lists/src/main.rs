@@ -22,7 +22,11 @@ impl ListNode {
 
 impl Solution {
     pub fn merge_k_lists(lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
-        return None;
+        let mut out = None;
+        for list in lists {
+            out = Self::merge_2_lists(list, out);
+        }
+        return out;
     }
 
     fn merge_2_lists(list_a: Option<Box<ListNode>>, list_b: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
@@ -69,6 +73,11 @@ impl Solution {
 
 struct Solution;
 
+// fn list_string(list: Option<Box<ListNode>>) -> String {
+//     let mut out = list.iter();
+//     out;
+// }
+
 fn main() {
-    println!("Hello, world!");
+    println!("Hello world!");
 }
