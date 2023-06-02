@@ -38,18 +38,19 @@ impl Solution {
 
             let mut time = inform_time[i];
             let mut man = manager[i];
+            let mut time_counting_down = 0;
             stack.push(i);
             loop {
-                stack.push(man as usize);
                 if time_cache[man as usize] >= 0 {
                     time += time_cache[man as usize];
+                    time_counting_down += time_cache[man as usize];
                     break;
                 }
+                stack.push(man as usize);
                 time += inform_time[man as usize];
                 man = manager[man as usize];
             }
 
-            let mut time_counting_down = inform_time[stack.pop().unwrap()]; // WEIRD
             while !stack.is_empty() {
                 let j = stack.pop().unwrap();
                 time_counting_down += inform_time[j];
