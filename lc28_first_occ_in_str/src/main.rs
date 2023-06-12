@@ -26,12 +26,8 @@ Constraints:
     1 <= haystack.length, needle.length <= 10^4
     haystack and needle consist of only lowercase English characters.
 */
-// use num_traits::cast::AsPrimitive;
-use std::collections::HashMap;
-use std::collections::HashSet;
-use std::collections::hash_map::Entry;
 
-struct Solution{}
+
 
 impl Solution {
     pub fn str_str(haystack: String, needle: String) -> i32 {
@@ -39,44 +35,65 @@ impl Solution {
         let needle_vec: Vec<char> = needle.chars().collect();
         let haystack_vec: Vec<char> = haystack.chars().collect();
         let needle_len: usize = needle.chars().count();
-        let haystack_len = haystack.chars().count();
-        let mut shift: usize = 0;
-        let mut i: usize = needle_len;
-
+        let haystack_len: usize = haystack.chars().count();
+        
         // Hashing in the needle with it's indices. 
         // Each character in needle will have it's index stored in a vector. 
-        let mut needle_hash: HashMap<char, Vec<usize>> = HashMap::new();
+        let mut needle_hash: Vec<Vec<usize>> = vec![vec![]; 26];
         for (i, c) in needle.chars().enumerate() {
-            match needle_hash.entry(c) {
-                Entry::Vacant(e) => {e.insert(vec![i]);}
-                Entry::Occupied(mut e) => {e.get_mut().insert(0, i);} 
-            }
+            needle_hash[c as usize - 97].push(i);
         }
+        
+        // Boyer-Moore loop
+        let mut shift: usize = 0;           // shift is how far we've shifted needle along haystack
+        
+        'outer: loop {
+            let mut i: usize = shift + needle_len - 1;      // i is the current index we're looking at when comparing needle and haystack
+            
+            if i > haystack_len - 1{
+                return -1;
+            }
 
-        loop {
-            let haystack_char: char = haystack_vec[needle_len - 1 + shift];
-            if haystack_char != needle_vec[needle_vec.len() -1] {
-                if needle_hash.contains_key(&haystack_char) {
-                    // exact expression here is still WIP
-                    let next_i = needle_hash.get(&haystack_char).unwrap().first().unwrap();
-                } else {
-                    if shift + needle_len > haystack_len - 1 {
-                        return -1;
-                    } else {
-                        shift += needle_len;
+            let nc_vec: &Vec<usize> =  &needle_hash[haystack_vec[i] as usize - 97]; // vector with all occurances(indexes) of nc in needle
+
+            // following loop only fires if we have hc occuring in needle somewhere.
+            for j in nc_vec.iter().rev() {
+                if *j + shift == i {
+                    // possible match, step backwards to see if they match
+                    while needle_vec[i - shift] == haystack_vec[i] {
+                        if i == shift {
+                            // we've checked through needle and it all matched
+                            return shift as i32;
+                        } else {
+                            i -= 1;
+                        }
                     }
-                    
+                    // if we're here, means comparision didn't match all the way
+                    // => let 'inner continue; if we're out of chars in nc_vect, we drop out and let 'outer continue
+                    i = shift + needle_len - 1;
+                } else {
+                    // means the index of j was wrong compared to i
+                    // => we shift so j and i matches, then we let 'outer continue
+                    shift += needle_len - 1 - *j;
+                    continue 'outer;
                 }
             }
-            
+            shift += needle_len;
         }
-
-        return 0;
     }
 
 }
 
+
+struct Solution{}
+
 fn main() {
-    let res = Solution::str_str(String::from("sadbutsad"), String::from("basda"));
-    println!("{res}");
+    assert_eq!(Solution::str_str(String::from("sadbutsad"), String::from("sad")), 0);
+    assert_eq!(Solution::str_str(String::from("sadbutsad"), String::from("but")), 3);
+    assert_eq!(Solution::str_str(String::from("sadbutsad"), String::from("asd")), -1);
+    assert_eq!(Solution::str_str(String::from("leetcode"), String::from("leeto")), -1);
+    assert_eq!(Solution::str_str(String::from("hello"), String::from("ll")), 2);
+    assert_eq!(Solution::str_str(String::from("aaaaa"), String::from("bba")), -1);
+    
+
 }
