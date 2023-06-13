@@ -48,10 +48,10 @@ impl Solution {
     fn digit_sum_str(num: &str, max: i32) -> i32 {
         let mut sum = 0;
         for c in num.chars() {
-            sum += i32::from_str_radix(&c.to_string(), 10).unwrap();
-            if sum >= max {
-                return -1;
-            }
+            sum += c as i32 - 48;
+            // if sum >= max {
+            //     return -1;
+            // }
         }
         return sum;
     }
