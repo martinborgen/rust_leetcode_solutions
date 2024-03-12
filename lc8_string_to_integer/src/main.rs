@@ -13,14 +13,25 @@ impl Solution {
             }
 
             // remove leading zeros
-            if (c as u32 - '0' as u32) == 0 {
+            if (c as i32 - '0' as i32) == 0 {
                 continue;
             }
 
             // read digits
-            if (c as u32 - '0' as u32) <= 9 {
-                output *= 10;
-                output += c as u32 - '0' as u32;
+            if (c as i32 - '0' as i32) >= 0 && (c as i32 - '0' as i32) <= 9 {
+                if output < std::i32::MAX / 10 {
+                    output *= 10;
+                } else {
+                    output = std::i32::MAX; // Missar fortfarande int MIN?
+                    break;
+                } 
+
+                if output - (c as i32 - '0' as i32) < std::i32::MAX {
+                    output += c as i32 - '0' as i32;
+                } else {
+                    output = std::i32::MAX;
+                    break;
+                }
             } else {
                 break;
             }
@@ -44,4 +55,12 @@ fn main() {
     assert_eq!(Solution::my_atoi(String::from("-0042")), -42);
     assert_eq!(Solution::my_atoi(String::from("asdfgasd")), 0);
     assert_eq!(Solution::my_atoi(String::from("-asdf")), 0);
+    assert_eq!(Solution::my_atoi(String::from("42asdf")), 42);
+    assert_eq!(Solution::my_atoi(String::from("-42asdf")), -42);
+    assert_eq!(Solution::my_atoi(String::from("-asdf42")), 0);
+    assert_eq!(Solution::my_atoi(String::from("   42")), 42);
+    assert_eq!(Solution::my_atoi(String::from("   -42")), -42);
+    assert_eq!(Solution::my_atoi(String::from("42 with words")), 42);
+    assert_eq!(Solution::my_atoi(String::from("2147483647")), 2147483647);
+    assert_eq!(Solution::my_atoi(String::from("2147483649")), 2147483647);
 }
