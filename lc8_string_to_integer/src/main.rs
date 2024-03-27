@@ -25,17 +25,17 @@ impl Solution {
             // read digits. Working in negative to handle i32::MIN and MAX
             if d >= 0 && d <= 9 {
                 sign = true;
-                if output >= std::i32::MIN / 10 {
+                if output >= i32::MIN / 10 {
                     output *= 10;
                 } else {
-                    output = std::i32::MIN;
+                    output = i32::MIN;
                     break;
                 } 
 
-                if output > std::i32::MIN + d {
+                if output > i32::MIN + d {
                     output -= d;
                 } else {
-                    output = std::i32::MIN;
+                    output = i32::MIN;
                     break;
                 }
             } else {
@@ -44,8 +44,8 @@ impl Solution {
         }
         
         if pos {
-            if output == std::i32::MIN {
-                return std::i32::MAX;
+            if output == i32::MIN {
+                return i32::MAX;
             } else {
                 return -(output as i32);
             }
