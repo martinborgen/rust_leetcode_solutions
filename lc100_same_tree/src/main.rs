@@ -51,19 +51,19 @@ impl Solution {
 }
 
 fn print_tree(p: Option<Rc<RefCell<TreeNode>>>) -> bool {
-    let mut stack: VecDeque<Option<Rc<RefCell<TreeNode>>>> = VecDeque::new();
+    let mut queue: VecDeque<Option<Rc<RefCell<TreeNode>>>> = VecDeque::new();
     let mut gen = 0;
     let mut count = 0;
-    stack.push_back(p);
-    while !stack.is_empty() {
-        let pp = stack.pop_front().unwrap();
+    queue.push_back(p);
+    while !queue.is_empty() {
+        let pp = queue.pop_front().unwrap();
         let nodes_in_gen = i32::pow(2, gen);
         count += 1;
 
         if let Some(current) = pp {
             print!("{} ", current.borrow_mut().val);
-            stack.push_back(current.borrow_mut().left.clone());
-            stack.push_back(current.borrow_mut().right.clone());
+            queue.push_back(current.borrow_mut().left.clone());
+            queue.push_back(current.borrow_mut().right.clone());
         }
         if count == nodes_in_gen {
             count = 0;
@@ -91,30 +91,34 @@ fn make_tree(vec: Vec<Option<i32>>) -> Option<Rc<RefCell<TreeNode>>> {
 
     let mut i = 1;
     while i < vec.len() {
-        let current: Rc<RefCell<TreeNode>> = stack.pop_front().unwrap().unwrap();
-        if vec[i].is_some() {
-            current.borrow_mut().left = Some(Rc::new(RefCell::new(TreeNode {
-                val: vec[i].unwrap(),
-                left: None,
-                right: None,
-            })));
-            stack.push_back(current.borrow_mut().left.clone());
-        }
+        let popped = stack.pop_front();
+        if let Some(Some(current)) = popped {
+            if let Some(x) = vec[i] {
+                current.borrow_mut().left = Some(Rc::new(RefCell::new(TreeNode {
+                    val: x,
+                    left: None,
+                    right: None,
+                })));
+                stack.push_back(current.borrow_mut().left.clone());
+            }
 
-        if i + 1 < vec.len() && vec[i + 1].is_some() {
-            current.borrow_mut().right = Some(Rc::new(RefCell::new(TreeNode {
-                val: vec[i + 1].unwrap(),
-                left: None,
-                right: None,
-            })));
-            stack.push_back(current.borrow_mut().right.clone());
-        }
+            if i + 1 < vec.len() {
+                if let Some(y) = vec[i + 1] {
+                    current.borrow_mut().right = Some(Rc::new(RefCell::new(TreeNode {
+                        val: y,
+                        left: None,
+                        right: None,
+                    })));
+                    stack.push_back(current.borrow_mut().right.clone());
+                }
+            }
 
-        if i == 1 {
-            output = Some(current); // explicitly handing back root. Gotta be a better way?
-        }
+            if i == 1 {
+                output = Some(current); // explicitly handing back root. Gotta be a better way?
+            }
 
-        i += 2;
+            i += 2;
+        }
     }
     return output;
 }
