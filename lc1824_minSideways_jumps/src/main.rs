@@ -2,54 +2,43 @@ impl Solution {
     pub fn min_side_jumps(obstacles: Vec<i32>) -> i32 {
         let len = obstacles.len();
 
-        // let visited: Vec<Vec<i32>> = vec![vec![0; 3]; len];
-        let mut visited: Vec<Vec<i32>> = vec![vec![i32::MAX; 3]; len];
+        let mut prev = vec![1, 0, 1];
 
-        visited[0][0] = 1;
-        visited[0][1] = 0;
-        visited[0][2] = 1;
-
-        for pos in 0..visited.len() {
-            for lane in 0..3 as usize{
-                if (lane + 1) as i32 == obstacles[pos] {
-                    continue;
-                }
-
-                if obstacles[pos - 1] != (lane + 1) as i32 {
-                    visited[pos][lane] = visited[pos - 1][lane];
-                }
-            }
-
+        for pos in 1..len {
             let mut min_jumps = i32::MAX;
-            for lane in 0..3 as usize {
-                if visited[pos][lane] < min_jumps {
-                    min_jumps = visited[pos][lane];
+            for lane in 0..3_usize {
+                if (lane + 1) as i32 == obstacles[pos] {
+                    prev[lane] = i32::MAX;
+                } else if prev[lane] < min_jumps {
+                    min_jumps = prev[lane];
                 }
             }
 
-            for lane in 0..3 as usize {
+            for lane in 0..3_usize {
                 if (lane + 1) as i32 == obstacles[pos] {
                     continue;
                 }
 
-                if visited[pos][lane] > min_jumps {
-                    visited[pos][lane] = min_jumps + 1;
+                if prev[lane] > min_jumps {
+                    prev[lane] = min_jumps + 1;
                 }
             }
         }
 
         let mut out = i32::MAX;
-        for lane in 0..3 as usize {
-            if visited[len - 1][lane] < out {
-                out = visited[len - 1][lane];
+        for lane in 0..3_usize {
+            if prev[lane] < out {
+                out = prev[lane];
             }
         }
-        return out;
+        out
     }
 }
 
 struct Solution;
 
 fn main() {
-    Solution::min_side_jumps(vec![0, 1, 2, 3, 0]);
+    assert_eq!(2, Solution::min_side_jumps(vec![0, 1, 2, 3, 0]));
+    assert_eq!(0, Solution::min_side_jumps(vec![0, 1, 1, 3, 3, 0]));
+    assert_eq!(2, Solution::min_side_jumps(vec![0, 2, 1, 0, 3, 0]));
 }
