@@ -1,3 +1,4 @@
+use std::borrow::Borrow;
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::rc::Rc;
@@ -26,27 +27,20 @@ impl Solution {
         p: Option<Rc<RefCell<TreeNode>>>,
         q: Option<Rc<RefCell<TreeNode>>>,
     ) -> bool {
-        let mut stack: VecDeque<Option<Rc<RefCell<TreeNode>>>> = Default::default();
-        let mut gen = 0;
-        let mut count = 0;
-        stack.push_back(p);
-        while !stack.is_empty() {
-            let pp = stack.pop_front().unwrap();
-            let nodes_in_gen = i32::pow(2, gen);
-            count += 1;
-
-            if let Some(current) = pp {
-                print!("{} ", current.borrow_mut().val);
-                stack.push_back(current.borrow_mut().left.clone());
-                stack.push_back(current.borrow_mut().right.clone());
+        match (p.borrow(), q.borrow()) {
+            (Some(p), Some(q)) => {
+                let l = Solution::is_same_tree(
+                    p.borrow_mut().left.clone(),
+                    q.borrow_mut().left.clone(),
+                );
+                let r = Solution::is_same_tree(
+                    p.borrow_mut().right.clone(),
+                    q.borrow_mut().right.clone(),
+                );
+                return l && r && (p == q);
             }
-            if count == nodes_in_gen {
-                count = 0;
-                gen += 1;
-                println!();
-            }
+            _ => return p == q,
         }
-        return true;
     }
 }
 
@@ -124,36 +118,25 @@ fn make_tree(vec: Vec<Option<i32>>) -> Option<Rc<RefCell<TreeNode>>> {
 }
 
 fn main() {
-    let a = TreeNode {
-        val: 1,
-        left: None,
-        right: None,
-    };
-    let a_ref_cell = RefCell::new(a);
-    let a_rc = Rc::new(a_ref_cell);
-
-    // let b = TreeNode {val: 1, left: None, right: None};
-    // let b_ref_cell = RefCell::new(b);
-    // let b_rc = Rc::new(b_ref_cell);
-
-    // let c = TreeNode {val: 1, left: None, right: Some(a_rc)};
-    // let c_ref_cell = RefCell::new(c);
-    // let c_rc = Rc::new(c_ref_cell);
-
-    // let d = TreeNode {val: 1, left: None, right: Some(b_rc)};
-    // let d_ref_cell = RefCell::new(d);
-    // let d_rc = Rc::new(d_ref_cell);
-
-    let tst = make_tree(vec![
-        Some(1),
-        Some(2),
-        None,
-        Some(4),
-        Some(5),
-        Some(6),
-        None,
-        Some(10),
-        Some(22),
-    ]);
-    print_tree(tst);
+    assert_eq!(
+        true,
+        Solution::is_same_tree(
+            make_tree(vec![Some(1), Some(2), Some(3)]),
+            make_tree(vec![Some(1), Some(2), Some(3)])
+        )
+    );
+    assert_eq!(
+        false,
+        Solution::is_same_tree(
+            make_tree(vec![Some(1), Some(2)]),
+            make_tree(vec![Some(1), None, Some(3)])
+        )
+    );
+    assert_eq!(
+        false,
+        Solution::is_same_tree(
+            make_tree(vec![Some(1), Some(2), Some(1)]),
+            make_tree(vec![Some(1), Some(1), Some(2)])
+        )
+    );
 }
