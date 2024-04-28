@@ -37,9 +37,9 @@ impl Solution {
                     p.borrow_mut().right.clone(),
                     q.borrow_mut().right.clone(),
                 );
-                return l && r && (p == q);
+                l && r && (p == q)
             }
-            _ => return p == q,
+            _ => p == q,
         }
     }
 }
@@ -65,7 +65,7 @@ fn print_tree(p: Option<Rc<RefCell<TreeNode>>>) -> bool {
             println!();
         }
     }
-    return true;
+    true
 }
 
 struct Solution;
@@ -114,27 +114,24 @@ fn make_tree(vec: Vec<Option<i32>>) -> Option<Rc<RefCell<TreeNode>>> {
             i += 2;
         }
     }
-    return output;
+    output
 }
 
 fn main() {
-    assert_eq!(
-        true,
+    assert!(
         Solution::is_same_tree(
             make_tree(vec![Some(1), Some(2), Some(3)]),
             make_tree(vec![Some(1), Some(2), Some(3)])
         )
     );
-    assert_eq!(
-        false,
-        Solution::is_same_tree(
+    assert!(
+        !Solution::is_same_tree(
             make_tree(vec![Some(1), Some(2)]),
             make_tree(vec![Some(1), None, Some(3)])
         )
     );
-    assert_eq!(
-        false,
-        Solution::is_same_tree(
+    assert!(
+        !Solution::is_same_tree(
             make_tree(vec![Some(1), Some(2), Some(1)]),
             make_tree(vec![Some(1), Some(1), Some(2)])
         )
