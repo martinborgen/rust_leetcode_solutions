@@ -18,6 +18,12 @@ impl Solution {
     pub fn build_matrix(k: i32, row_conditions: Vec<Vec<i32>>, col_conditions: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
         let mut out: Vec<Vec<i32>> = vec![vec![0; k as usize]; k as usize];
         
+        let mut k_and_pos: Vec<Vec<i32>> = vec![vec![0; 3]; k as usize]; // is [k, row, col]
+        for i in 0..k {
+            k_and_pos[i as usize] = vec![i + 1; 3];
+        }
+        
+        print_matrix(k_and_pos);
         todo!()
     }
 }
@@ -34,6 +40,5 @@ fn print_matrix(matrix: Vec<Vec<i32>>) {
 }
 
 fn main() {
-    let test: Vec<Vec<i32>> = vec![vec![1, 2, 3], vec![4, 5, 6], vec![7, 8, 9]];
-    print_matrix(test);
+    Solution::build_matrix(6, vec![vec![0, 0]], vec![vec![0, 0]]);
 }
