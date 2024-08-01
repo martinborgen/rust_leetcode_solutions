@@ -5,10 +5,10 @@ impl Solution {
                 return word;
             }
         }
-        return String::from("");
+        String::from("")
     }
 
-    fn is_palindrome(word: &String) -> bool {
+    fn is_palindrome(word: &str) -> bool {
         let mut forewards = word.chars();
         let mut backwards = word.chars().rev();
 
@@ -17,7 +17,7 @@ impl Solution {
                 return false;
             }
         }
-        return true;
+        true
     }
 }
 
@@ -44,10 +44,7 @@ fn main() {
     );
 
     assert_eq!(
-        Solution::first_palindrome(vec![
-            String::from("def"),
-            String::from("ghi")
-        ]),
+        Solution::first_palindrome(vec![String::from("def"), String::from("ghi")]),
         String::from("")
     );
 }
