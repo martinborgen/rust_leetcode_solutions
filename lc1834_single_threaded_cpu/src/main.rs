@@ -1,7 +1,32 @@
+#[derive(Eq)]
 struct Task {
     index: i32,
     enqueue_t: i32,
     execute_t: i32,
+}
+
+impl Ord for Task {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.enqueue_t == other.enqueue_t && self.execute_t == other.execute_t {
+            return self.index.cmp(&other.index);
+        } else if self.enqueue_t == other.enqueue_t {
+            return self.execute_t.cmp(&other.execute_t);
+        } else {
+            return self.enqueue_t.cmp(&other.enqueue_t);
+        }
+    }
+}
+
+impl PartialOrd for Task {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialEq for Task {
+    fn eq(&self, other: &Self) -> bool {
+        self == other
+    }
 }
 
 impl Solution {
