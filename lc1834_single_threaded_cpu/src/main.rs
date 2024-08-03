@@ -54,6 +54,7 @@ impl Solution {
             if !available_tasks.is_empty() && time < available_tasks.peek().unwrap().enqueue_t {
                 time = available_tasks.peek().unwrap().enqueue_t;
             } else if !tasks_sorted.is_empty()
+                && available_tasks.is_empty()
                 && time < tasks_sorted[tasks_sorted.len() - 1].enqueue_t
             {
                 time = tasks_sorted[tasks_sorted.len() - 1].enqueue_t;
@@ -76,41 +77,41 @@ impl Solution {
 struct Solution;
 
 fn main() {
-    // assert_eq!(
-    //     Solution::get_order(vec![vec![1, 2], vec![2, 4], vec![3, 2], vec![4, 1]]),
-    //     vec![0, 2, 3, 1]
-    // );
+    assert_eq!(
+        Solution::get_order(vec![vec![1, 2], vec![2, 4], vec![3, 2], vec![4, 1]]),
+        vec![0, 2, 3, 1]
+    );
 
-    // assert_eq!(
-    //     Solution::get_order(vec![
-    //         vec![7, 10],
-    //         vec![7, 12],
-    //         vec![7, 5],
-    //         vec![7, 4],
-    //         vec![7, 2]
-    //     ]),
-    //     vec![4, 3, 2, 0, 1]
-    // );
+    assert_eq!(
+        Solution::get_order(vec![
+            vec![7, 10],
+            vec![7, 12],
+            vec![7, 5],
+            vec![7, 4],
+            vec![7, 2]
+        ]),
+        vec![4, 3, 2, 0, 1]
+    );
 
-    // assert_eq!(
-    //     Solution::get_order(vec![
-    //         vec![19, 13],
-    //         vec![16, 9],
-    //         vec![21, 10],
-    //         vec![32, 25],
-    //         vec![37, 4],
-    //         vec![49, 24],
-    //         vec![2, 15],
-    //         vec![38, 41],
-    //         vec![37, 34],
-    //         vec![33, 6],
-    //         vec![45, 4],
-    //         vec![18, 18],
-    //         vec![46, 39],
-    //         vec![12, 24]
-    //     ]),
-    //     vec![6, 1, 2, 9, 4, 10, 0, 11, 5, 13, 3, 8, 12, 7]
-    // );
+    assert_eq!(
+        Solution::get_order(vec![
+            vec![19, 13],
+            vec![16, 9],
+            vec![21, 10],
+            vec![32, 25],
+            vec![37, 4],
+            vec![49, 24],
+            vec![2, 15],
+            vec![38, 41],
+            vec![37, 34],
+            vec![33, 6],
+            vec![45, 4],
+            vec![18, 18],
+            vec![46, 39],
+            vec![12, 24]
+        ]),
+        vec![6, 1, 2, 9, 4, 10, 0, 11, 5, 13, 3, 8, 12, 7]
+    );
 
     assert_eq!(
         Solution::get_order(vec![
