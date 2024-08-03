@@ -30,7 +30,7 @@ impl Solution {
         let mut time = tasks_sorted[tasks_sorted.len() - 1].enqueue_t;
         let mut available_tasks: Vec<Task> = Vec::new();
         loop {
-            while tasks_sorted.len() > 0 && tasks_sorted[tasks_sorted.len() - 1].enqueue_t <= time {
+            while !tasks_sorted.is_empty() && tasks_sorted[tasks_sorted.len() - 1].enqueue_t <= time {
                 available_tasks.push(tasks_sorted.pop().unwrap())
             }
 
