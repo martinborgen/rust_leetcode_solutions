@@ -1,18 +1,19 @@
-#[derive(Eq)]
+use std::collections::BinaryHeap;
+
+#[derive(Eq, PartialEq)]
 struct Task {
     index: i32,
     enqueue_t: i32,
     execute_t: i32,
 }
 
+// Explicit ordering to make binary heap a min-heap
 impl Ord for Task {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        if self.enqueue_t == other.enqueue_t && self.execute_t == other.execute_t {
-            return self.index.cmp(&other.index);
-        } else if self.enqueue_t == other.enqueue_t {
-            return self.execute_t.cmp(&other.execute_t);
+        if self.execute_t == other.execute_t {
+            other.index.cmp(&self.index)
         } else {
-            return self.enqueue_t.cmp(&other.enqueue_t);
+            other.execute_t.cmp(&self.execute_t)
         }
     }
 }
@@ -23,11 +24,11 @@ impl PartialOrd for Task {
     }
 }
 
-impl PartialEq for Task {
-    fn eq(&self, other: &Self) -> bool {
-        self == other
-    }
-}
+// impl PartialEq for Task {
+//     fn eq(&self, other: &Self) -> bool {
+//         self == other
+//     }
+// }
 
 impl Solution {
     pub fn get_order(tasks: Vec<Vec<i32>>) -> Vec<i32> {
@@ -42,44 +43,28 @@ impl Solution {
             });
         }
 
-        tasks_sorted.sort_by(|a, b| {
-            if a.enqueue_t == b.enqueue_t {
-                a.enqueue_t.cmp(&b.execute_t)
-            } else {
-                a.enqueue_t.cmp(&b.enqueue_t)
+        tasks_sorted.sort_by(|a, b| b.enqueue_t.cmp(&a.enqueue_t)); // reversing order
+
+        let mut available_tasks: BinaryHeap<Task> = BinaryHeap::new();
+        available_tasks.push(tasks_sorted.pop().unwrap());
+        let mut time = available_tasks.peek().unwrap().enqueue_t;
+
+        while !tasks_sorted.is_empty() || !available_tasks.is_empty() {
+            // increment time in case no task is enqueued
+            if !available_tasks.is_empty() && time < available_tasks.peek().unwrap().enqueue_t {
+                time = available_tasks.peek().unwrap().enqueue_t;
             }
-        });
 
-        tasks_sorted.reverse(); // reverse because Vec::pop() returns last element
-
-        let mut time = tasks_sorted[tasks_sorted.len() - 1].enqueue_t;
-        let mut available_tasks: Vec<Task> = Vec::new();
-        loop {
+            // update available tasks
             while !tasks_sorted.is_empty() && tasks_sorted[tasks_sorted.len() - 1].enqueue_t <= time
             {
-                available_tasks.push(tasks_sorted.pop().unwrap())
+                available_tasks.push(tasks_sorted.pop().unwrap());
             }
 
-            let mut min_idx: usize = 0;
-            let mut min = i32::MAX;
-            for (i, t) in available_tasks.iter().enumerate() {
-                if t.execute_t < min
-                    || (t.execute_t == min && t.index < available_tasks[min_idx].index)
-                {
-                    min_idx = i;
-                    min = t.execute_t;
-                }
-            }
-
-            let current_task = available_tasks.remove(min_idx);
-            time += current_task.execute_t;
-            output.push(current_task.index);
-
-            if output.len() == tasks.len() {
-                break;
-            }
+            let current = available_tasks.pop().unwrap();
+            time += current.execute_t;
+            output.push(current.index);
         }
-
         output
     }
 }
@@ -87,21 +72,21 @@ impl Solution {
 struct Solution;
 
 fn main() {
-    // assert_eq!(
-    //     Solution::get_order(vec![vec![1, 2], vec![2, 4], vec![3, 2], vec![4, 1]]),
-    //     vec![0, 2, 3, 1]
-    // );
+    assert_eq!(
+        Solution::get_order(vec![vec![1, 2], vec![2, 4], vec![3, 2], vec![4, 1]]),
+        vec![0, 2, 3, 1]
+    );
 
-    // assert_eq!(
-    //     Solution::get_order(vec![
-    //         vec![7, 10],
-    //         vec![7, 12],
-    //         vec![7, 5],
-    //         vec![7, 4],
-    //         vec![7, 2]
-    //     ]),
-    //     vec![4, 3, 2, 0, 1]
-    // );
+    assert_eq!(
+        Solution::get_order(vec![
+            vec![7, 10],
+            vec![7, 12],
+            vec![7, 5],
+            vec![7, 4],
+            vec![7, 2]
+        ]),
+        vec![4, 3, 2, 0, 1]
+    );
 
     assert_eq!(
         Solution::get_order(vec![
