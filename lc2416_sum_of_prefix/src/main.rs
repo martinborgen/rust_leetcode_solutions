@@ -1,26 +1,37 @@
+use std::collections::HashMap;
+
 impl Solution {
     pub fn sum_prefix_scores(words: Vec<String>) -> Vec<i32> {
         let mut output = Vec::with_capacity(words.len());
+        let mut hmap: HashMap<String, i32> = HashMap::new();
 
         for word in &words {
             let mut prefixes: Vec<String> = Vec::with_capacity(word.len());
-            let mut count = 0;
+            let mut i_count = 0;
+
             for i in 1..word.len() + 1 {
                 prefixes.push(word[0..i].into());
             }
 
             for pref in prefixes {
-                for w in &words {
-                    if pref.len() <= w.len() && pref == w[0..pref.len()] {
-                        count += 1;
+                let mut j_count = 0;
+                if hmap.contains_key(&pref) {
+                    i_count += hmap[&pref];
+                } else {
+                    for w in &words {
+                        if pref.len() <= w.len() && pref == w[0..pref.len()] {
+                            j_count += 1;
+                        }
                     }
+                    i_count += j_count;
+                    hmap.insert(pref, j_count);
                 }
             }
 
-            output.push(count);
+            output.push(i_count);
         }
 
-        return output;
+        output
     }
 }
 
