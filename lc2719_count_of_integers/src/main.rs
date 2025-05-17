@@ -30,8 +30,6 @@ Constraints:
 
  */
 
-use core::num;
-
 struct Solution;
 
 impl Solution {
