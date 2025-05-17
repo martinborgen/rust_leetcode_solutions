@@ -30,6 +30,8 @@ Constraints:
 
  */
 
+use core::num;
+
 struct Solution;
 
 impl Solution {
@@ -38,31 +40,72 @@ impl Solution {
 
         let mut count: i128 = 0;
 
-        let n1 = i128::from_str_radix(&num1, base).unwrap(); // intentional panic on parseIntError
-        let n2 = i128::from_str_radix(&num2, base).unwrap(); // intentional panic on parseIntError
+        // let n2 = i128::from_str_radix(&num2, base).unwrap(); // intentional panic on parseIntError
 
-        for i in n1..=n2 {
-            let digit_sum = Self::digit_sum(i);
-            if digit_sum >= min_sum && digit_sum <= max_sum {
+        // working_num is a number as a vector of it's digits. starts with num1, then increments
+        let mut working_num: Vec<i32> = num1
+            .chars()
+            .map(|n| n.to_digit(10).unwrap() as i32)
+            .collect();
+
+        let mut num2_vect: Vec<i32> = num2
+            .chars()
+            .map(|n| n.to_digit(10).unwrap() as i32)
+            .collect();
+        Self::num_vect_incr(&mut num2_vect); // As num2 should also be evaluated
+
+        loop {
+            let working_sum: i32 = working_num.iter().sum();
+            if min_sum <= working_sum && working_sum <= max_sum {
                 count += 1;
             }
+
+            Self::num_vect_incr(&mut working_num);
+
+            if working_num == num2_vect {
+                break;
+            }
         }
+
         return (count % 1000000000 + 7) as i32;
     }
 
-    fn digit_sum(mut num: i128) -> i32 {
-        let mut sum: i32 = 0;
-        while num > 0 {
-            sum += (num % 10) as i32;
-            num /= 10;
+    fn num_vect_incr(num: &mut Vec<i32>) {
+        let mut i = num.len() - 1;
+        while num[i] == 9 {
+            num[i] = 0;
+
+            if i == 0 {
+                num.push(0);
+                for j in (1..num.len()).rev() {
+                    num[j] = num[j - 1];
+                }
+                num[0] = 0; // this will be incremented later
+            } else {
+                i -= 1;
+            }
         }
-        sum
+
+        num[i] = num[i] + 1;
     }
 }
 
 fn main() {
-    assert_eq!(Solution::digit_sum(123), 6);
-    assert_eq!(Solution::digit_sum(89), 17);
+    let mut num_vect_test1 = vec![1, 2, 3];
+    Solution::num_vect_incr(&mut num_vect_test1);
+    assert_eq!(num_vect_test1, [1, 2, 4]);
+
+    let mut num_vect_test2 = vec![1, 8, 9, 9, 9];
+    Solution::num_vect_incr(&mut num_vect_test2);
+    assert_eq!(num_vect_test2, [1, 9, 0, 0, 0]);
+
+    let mut num_vect_test3 = vec![9];
+    Solution::num_vect_incr(&mut num_vect_test3);
+    assert_eq!(num_vect_test3, [1, 0]);
+
+    let mut num_vect_test4 = vec![9, 9, 9];
+    Solution::num_vect_incr(&mut num_vect_test4);
+    assert_eq!(num_vect_test4, [1, 0, 0, 0]);
 
     assert_eq!(Solution::count("1".into(), "12".into(), 1, 8), 11 + 7);
     assert_eq!(Solution::count("1".into(), "5".into(), 1, 5), 5 + 7);
