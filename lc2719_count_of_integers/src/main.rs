@@ -34,8 +34,6 @@ struct Solution;
 
 impl Solution {
     pub fn count(num1: String, num2: String, min_sum: i32, max_sum: i32) -> i32 {
-        let base = 10;
-
         let mut count: i128 = 0;
 
         // let n2 = i128::from_str_radix(&num2, base).unwrap(); // intentional panic on parseIntError
@@ -65,7 +63,7 @@ impl Solution {
             }
         }
 
-        return (count % 1000000000 + 7) as i32;
+        (count % 1000000000 + 7) as i32
     }
 
     fn num_vect_incr(num: &mut Vec<i32>) {
@@ -84,7 +82,7 @@ impl Solution {
             }
         }
 
-        num[i] = num[i] + 1;
+        num[i] += 1;
     }
 }
 
