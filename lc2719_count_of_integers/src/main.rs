@@ -32,6 +32,17 @@ Constraints:
 
 struct Solution;
 
+/*
+Some notes and ideas:
+if incrementing from a number with a digit sum less than the min sum, increment
+directly until min sum is reached.
+
+when reaching the max sum, stop incrementing and go to the next n+1 digit number
+somewhere, permutations should also be possible to add, since as long as a number
+is within the range of [num1, num2], but it might be hard to account for double-
+counting numbers that way.
+*/
+
 impl Solution {
     pub fn count(num1: String, num2: String, min_sum: i32, max_sum: i32) -> i32 {
         let mut count: i128 = 0;
