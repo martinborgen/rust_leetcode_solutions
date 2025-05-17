@@ -63,7 +63,7 @@ impl Solution {
             }
         }
 
-        (count % 1000000000 + 7) as i32
+        (count % (1000000000 + 7)) as i32
     }
 
     fn num_vect_incr(num: &mut Vec<i32>) {
@@ -103,6 +103,6 @@ fn main() {
     Solution::num_vect_incr(&mut num_vect_test4);
     assert_eq!(num_vect_test4, [1, 0, 0, 0]);
 
-    assert_eq!(Solution::count("1".into(), "12".into(), 1, 8), 11 + 7);
-    assert_eq!(Solution::count("1".into(), "5".into(), 1, 5), 5 + 7);
+    assert_eq!(Solution::count("1".into(), "12".into(), 1, 8), 11);
+    assert_eq!(Solution::count("1".into(), "5".into(), 1, 5), 5);
 }
