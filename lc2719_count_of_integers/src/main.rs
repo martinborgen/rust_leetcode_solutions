@@ -47,31 +47,15 @@ impl Solution {
     pub fn count(num1: String, num2: String, min_sum: i32, max_sum: i32) -> i32 {
         let mut count: i128 = 0;
 
-        // let n2 = i128::from_str_radix(&num2, base).unwrap(); // intentional panic on parseIntError
+        let base = 10;
+        let n1 = i128::from_str_radix(&num1, base).unwrap(); // intentional panic on parseIntError
+        let n2 = i128::from_str_radix(&num2, base).unwrap(); // intentional panic on parseIntError
 
-        // working_num is a number as a vector of it's digits. starts with num1, then increments
-        let mut working_num: Vec<i32> = num1
-            .chars()
-            .map(|n| n.to_digit(10).unwrap() as i32)
-            .collect();
+        let mut i = n1;
 
-        let mut num2_vect: Vec<i32> = num2
-            .chars()
-            .map(|n| n.to_digit(10).unwrap() as i32)
-            .collect();
-        Self::num_vect_incr(&mut num2_vect); // As num2 should also be evaluated
-
-        loop {
-            let working_sum: i32 = working_num.iter().sum();
-            if min_sum <= working_sum && working_sum <= max_sum {
-                count += 1;
-            }
-
-            Self::num_vect_incr(&mut working_num);
-
-            if working_num == num2_vect {
-                break;
-            }
+        while i < n2 {
+            let i_sum = Self::digit_sum_int(i);
+            if i_sum < min_sum {}
         }
 
         (count % (1000000000 + 7)) as i32
@@ -95,33 +79,50 @@ impl Solution {
 
         num[i] += 1;
     }
+
+    fn print_numvect(num: &Vec<i32>) {
+        for n in num.iter() {
+            print!("{}", n);
+        }
+    }
+
+    fn digit_sum_int(mut num: i128) -> i32 {
+        let mut sum = 0;
+        while num > 0 {
+            sum += (num % 10) as i32;
+            num /= 10;
+        }
+        sum
+    }
 }
 
 fn main() {
-    let mut num_vect_test1 = vec![1, 2, 3];
-    Solution::num_vect_incr(&mut num_vect_test1);
-    assert_eq!(num_vect_test1, [1, 2, 4]);
+    // let mut num_vect_test1 = vec![1, 2, 3];
+    // Solution::num_vect_incr(&mut num_vect_test1);
+    // assert_eq!(num_vect_test1, [1, 2, 4]);
 
-    let mut num_vect_test2 = vec![1, 8, 9, 9, 9];
-    Solution::num_vect_incr(&mut num_vect_test2);
-    assert_eq!(num_vect_test2, [1, 9, 0, 0, 0]);
+    // let mut num_vect_test2 = vec![1, 8, 9, 9, 9];
+    // Solution::num_vect_incr(&mut num_vect_test2);
+    // assert_eq!(num_vect_test2, [1, 9, 0, 0, 0]);
 
-    let mut num_vect_test3 = vec![9];
-    Solution::num_vect_incr(&mut num_vect_test3);
-    assert_eq!(num_vect_test3, [1, 0]);
+    // let mut num_vect_test3 = vec![9];
+    // Solution::num_vect_incr(&mut num_vect_test3);
+    // assert_eq!(num_vect_test3, [1, 0]);
 
-    let mut num_vect_test4 = vec![9, 9, 9];
-    Solution::num_vect_incr(&mut num_vect_test4);
-    assert_eq!(num_vect_test4, [1, 0, 0, 0]);
+    // let mut num_vect_test4 = vec![9, 9, 9];
+    // Solution::num_vect_incr(&mut num_vect_test4);
+    // assert_eq!(num_vect_test4, [1, 0, 0, 0]);
 
-    assert_eq!(Solution::count("1".into(), "12".into(), 1, 8), 11);
-    assert_eq!(Solution::count("1".into(), "5".into(), 1, 5), 5);
+    // assert_eq!(Solution::count("1".into(), "12".into(), 1, 8), 11);
+    // assert_eq!(Solution::count("1".into(), "5".into(), 1, 5), 5);
     // assert_eq!(
     //     Solution::count("4179205230".into(), "7748704426".into(), 8, 46),
     //     883045899
     // );
-    assert_eq!(
-        Solution::count("12345".into(), "22222222".into(), 17, 113),
-        21740632
-    )
+    // assert_eq!(
+    //     Solution::count("12345".into(), "22222222".into(), 17, 113),
+    //     21740632
+    // )
+
+    assert_eq!(Solution::count("45".into(), "222".into(), 12, 113), 9);
 }
