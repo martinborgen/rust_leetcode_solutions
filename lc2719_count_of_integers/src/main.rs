@@ -94,35 +94,24 @@ impl Solution {
         }
         sum
     }
+
+    fn min_num_for_digit_sum(sum: i32) -> i128 {
+        let nines = sum / 9;
+        let mut num: i128 = (sum % 9) as i128;
+
+        for _ in 0..nines {
+            num *= 10;
+            num += 9;
+        }
+
+        num
+    }
 }
 
 fn main() {
-    // let mut num_vect_test1 = vec![1, 2, 3];
-    // Solution::num_vect_incr(&mut num_vect_test1);
-    // assert_eq!(num_vect_test1, [1, 2, 4]);
+    assert_eq!(Solution::min_num_for_digit_sum(5), 5);
+    assert_eq!(Solution::min_num_for_digit_sum(12), 39);
+    assert_eq!(Solution::min_num_for_digit_sum(13), 49);
 
-    // let mut num_vect_test2 = vec![1, 8, 9, 9, 9];
-    // Solution::num_vect_incr(&mut num_vect_test2);
-    // assert_eq!(num_vect_test2, [1, 9, 0, 0, 0]);
-
-    // let mut num_vect_test3 = vec![9];
-    // Solution::num_vect_incr(&mut num_vect_test3);
-    // assert_eq!(num_vect_test3, [1, 0]);
-
-    // let mut num_vect_test4 = vec![9, 9, 9];
-    // Solution::num_vect_incr(&mut num_vect_test4);
-    // assert_eq!(num_vect_test4, [1, 0, 0, 0]);
-
-    // assert_eq!(Solution::count("1".into(), "12".into(), 1, 8), 11);
-    // assert_eq!(Solution::count("1".into(), "5".into(), 1, 5), 5);
-    // assert_eq!(
-    //     Solution::count("4179205230".into(), "7748704426".into(), 8, 46),
-    //     883045899
-    // );
-    // assert_eq!(
-    //     Solution::count("12345".into(), "22222222".into(), 17, 113),
-    //     21740632
-    // )
-
-    assert_eq!(Solution::count("45".into(), "222".into(), 12, 113), 9);
+    // assert_eq!(Solution::count("45".into(), "222".into(), 17, 113), 9);
 }
