@@ -116,6 +116,7 @@ fn main() {
 
     assert_eq!(Solution::count("1".into(), "12".into(), 1, 8), 11);
     assert_eq!(Solution::count("1".into(), "5".into(), 1, 5), 5);
+    assert_eq!(Solution::count("14".into(), "234".into(), 13, 16), 41);
     // assert_eq!(
     //     Solution::count("4179205230".into(), "7748704426".into(), 8, 46),
     //     883045899
