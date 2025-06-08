@@ -84,9 +84,6 @@ impl Solution {
 
             if i == 0 {
                 num.push(0);
-                for j in (1..num.len()).rev() {
-                    num[j] = num[j - 1];
-                }
                 num[0] = 0; // this will be incremented later
             } else {
                 i -= 1;
@@ -98,22 +95,6 @@ impl Solution {
 }
 
 fn main() {
-    let mut num_vect_test1 = vec![1, 2, 3];
-    Solution::num_vect_incr(&mut num_vect_test1);
-    assert_eq!(num_vect_test1, [1, 2, 4]);
-
-    let mut num_vect_test2 = vec![1, 8, 9, 9, 9];
-    Solution::num_vect_incr(&mut num_vect_test2);
-    assert_eq!(num_vect_test2, [1, 9, 0, 0, 0]);
-
-    let mut num_vect_test3 = vec![9];
-    Solution::num_vect_incr(&mut num_vect_test3);
-    assert_eq!(num_vect_test3, [1, 0]);
-
-    let mut num_vect_test4 = vec![9, 9, 9];
-    Solution::num_vect_incr(&mut num_vect_test4);
-    assert_eq!(num_vect_test4, [1, 0, 0, 0]);
-
     assert_eq!(Solution::count("1".into(), "12".into(), 1, 8), 11);
     assert_eq!(Solution::count("1".into(), "5".into(), 1, 5), 5);
     assert_eq!(Solution::count("14".into(), "234".into(), 13, 16), 41);
@@ -125,4 +106,28 @@ fn main() {
         Solution::count("12345".into(), "22222222".into(), 17, 113),
         21740632
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn num_vect_incr() {
+        let mut num_vect_test1 = vec![1, 2, 3];
+        Solution::num_vect_incr(&mut num_vect_test1);
+        assert_eq!(num_vect_test1, [1, 2, 4]);
+
+        let mut num_vect_test2 = vec![1, 8, 9, 9, 9];
+        Solution::num_vect_incr(&mut num_vect_test2);
+        assert_eq!(num_vect_test2, [1, 9, 0, 0, 0]);
+
+        let mut num_vect_test3 = vec![9];
+        Solution::num_vect_incr(&mut num_vect_test3);
+        assert_eq!(num_vect_test3, [1, 0]);
+
+        let mut num_vect_test4 = vec![9, 9, 9];
+        Solution::num_vect_incr(&mut num_vect_test4);
+        assert_eq!(num_vect_test4, [1, 0, 0, 0]);
+    }
 }
