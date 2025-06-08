@@ -71,22 +71,18 @@ impl Solution {
             if working_num == num2_vect {
                 break;
             }
-            Self::num_vect_incr(&mut working_num);
-            if working_num[working_num.len() - 1] != 0 {
-                working_sum += 1;
-            } else {
-                working_sum = working_num.iter().sum();
-            }
+            working_sum = Self::num_vect_incr(&mut working_num, working_sum);
         }
 
         count
     }
 
-    fn num_vect_incr(num: &mut Vec<i32>) {
+    /// increments the num vector and returns the sum of its digits
+    fn num_vect_incr(num: &mut Vec<i32>, mut sum: i32) -> i32 {
         let mut i = num.len() - 1;
         while num[i] == 9 {
             num[i] = 0;
-
+            sum -= 9;
             if i == 0 {
                 num.push(0);
                 num[0] = 0; // this will be incremented later
@@ -94,8 +90,9 @@ impl Solution {
                 i -= 1;
             }
         }
-
         num[i] += 1;
+        sum += 1;
+        sum
     }
 }
 
@@ -120,19 +117,23 @@ mod tests {
     #[test]
     fn num_vect_incr() {
         let mut num_vect_test1 = vec![1, 2, 3];
-        Solution::num_vect_incr(&mut num_vect_test1);
+        let sum1 = Solution::num_vect_incr(&mut num_vect_test1, 6);
         assert_eq!(num_vect_test1, [1, 2, 4]);
+        assert_eq!(sum1, 7);
 
         let mut num_vect_test2 = vec![1, 8, 9, 9, 9];
-        Solution::num_vect_incr(&mut num_vect_test2);
+        let sum2 = Solution::num_vect_incr(&mut num_vect_test2, 36);
         assert_eq!(num_vect_test2, [1, 9, 0, 0, 0]);
+        assert_eq!(sum2, 10);
 
         let mut num_vect_test3 = vec![9];
-        Solution::num_vect_incr(&mut num_vect_test3);
+        let sum3 = Solution::num_vect_incr(&mut num_vect_test3, 9);
         assert_eq!(num_vect_test3, [1, 0]);
+        assert_eq!(sum3, 1);
 
         let mut num_vect_test4 = vec![9, 9, 9];
-        Solution::num_vect_incr(&mut num_vect_test4);
+        let sum4 = Solution::num_vect_incr(&mut num_vect_test4, 27);
         assert_eq!(num_vect_test4, [1, 0, 0, 0]);
+        assert_eq!(sum4, 1);
     }
 }
