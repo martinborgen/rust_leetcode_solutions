@@ -25,7 +25,7 @@ Explanation: The 5 integers whose sum of digits lies between 1 and 5 are 1,2,3,4
 
 Constraints:
 
-    1 <= num1 <= num2 <= 1022
+    1 <= num1 <= num2 <= 10^22
     1 <= min_sum <= max_sum <= 400
 
  */
@@ -45,9 +45,7 @@ counting numbers that way.
 
 impl Solution {
     pub fn count(num1: String, num2: String, min_sum: i32, max_sum: i32) -> i32 {
-        let mut count: i128 = 0;
-
-        // let n2 = i128::from_str_radix(&num2, base).unwrap(); // intentional panic on parseIntError
+        let mut count = 0;
 
         // working_num is a number as a vector of it's digits. starts with num1, then increments
         let mut working_num: Vec<i32> = num1
@@ -55,26 +53,33 @@ impl Solution {
             .map(|n| n.to_digit(10).unwrap() as i32)
             .collect();
 
-        let mut num2_vect: Vec<i32> = num2
+        let num2_vect: Vec<i32> = num2
             .chars()
             .map(|n| n.to_digit(10).unwrap() as i32)
             .collect();
-        Self::num_vect_incr(&mut num2_vect); // As num2 should also be evaluated
 
+        let mut working_sum: i32 = working_num.iter().sum();
         loop {
-            let working_sum: i32 = working_num.iter().sum();
             if min_sum <= working_sum && working_sum <= max_sum {
-                count += 1;
+                if count == 1000000000 + 7 {
+                    count = 1;
+                } else {
+                    count += 1;
+                }
             }
-
-            Self::num_vect_incr(&mut working_num);
 
             if working_num == num2_vect {
                 break;
             }
+            Self::num_vect_incr(&mut working_num);
+            if working_num[working_num.len() - 1] != 0 {
+                working_sum += 1;
+            } else {
+                working_sum = working_num.iter().sum();
+            }
         }
 
-        (count % (1000000000 + 7)) as i32
+        count
     }
 
     fn num_vect_incr(num: &mut Vec<i32>) {
@@ -98,10 +103,10 @@ fn main() {
     assert_eq!(Solution::count("1".into(), "12".into(), 1, 8), 11);
     assert_eq!(Solution::count("1".into(), "5".into(), 1, 5), 5);
     assert_eq!(Solution::count("14".into(), "234".into(), 13, 16), 41);
-    // assert_eq!(
-    //     Solution::count("4179205230".into(), "7748704426".into(), 8, 46),
-    //     883045899
-    // );
+    assert_eq!(
+        Solution::count("4179205230".into(), "7748704426".into(), 8, 46),
+        883045899
+    );
     assert_eq!(
         Solution::count("12345".into(), "22222222".into(), 17, 113),
         21740632
