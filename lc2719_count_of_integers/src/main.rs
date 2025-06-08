@@ -94,6 +94,55 @@ impl Solution {
         sum += 1;
         sum
     }
+
+    /// advances the numvect to minsum. takes the sum for efficiency reasons, returns it to ensure sucessful operation
+    fn adv_to_minsum(num: &mut Vec<i32>, mut sum: i32, min_sum: i32) -> i32 {
+        if num.len() == 0 {
+            num.push(0);
+        }
+
+        let mut diff_min = min_sum - sum;
+        // let mut diff_max = sum - max_sum;
+
+        // if diff_max < 0 {
+        //     // means we should flip a few nines to zeros
+        //     let mut carry = 0;
+        //     let mut i = num.len() - 1;
+        //     while diff_min < 0 && i > 0 {
+        //         diff_min += num[i];
+        //         sum -= num[i];
+        //         carry = 1; // we're flipping nums so carry is one if we flip. We use 'it up every flip' though, so never more than one
+        //         i -= 1;
+        //     }
+
+        //     // - handle adding of extra digits, eg. going from 99 to 100
+        //     // - handle carry bit
+        //     // now at msd, possible it is not a ine.
+        // }
+
+        if diff_min > 0 {
+            let mut i = num.len() - 1;
+            while i > 0 && diff_min > 0 {
+                let incr = i32::min(9 - num[i], diff_min);
+                diff_min -= incr;
+                num[i] += incr;
+                sum += incr;
+                i -= 1;
+            }
+
+            if diff_min > 0 {
+                // num[0] will be just nines in this case, right?
+                while diff_min + num[i] > 9 {
+                    num.push(9);
+                    diff_min -= 9;
+                    sum += 9;
+                }
+
+                num[i] += diff_min;
+            }
+        }
+        sum
+    }
 }
 
 fn main() {
@@ -135,5 +184,26 @@ mod tests {
         let sum4 = Solution::num_vect_incr(&mut num_vect_test4, 27);
         assert_eq!(num_vect_test4, [1, 0, 0, 0]);
         assert_eq!(sum4, 1);
+    }
+
+    #[test]
+    fn adv_to_minsum() {
+        let minsum1 = 19; // min num for this is 199
+        let mut num_vec_test1 = vec![1, 2, 3];
+        let sum1 = Solution::adv_to_minsum(&mut num_vec_test1, 6, minsum1);
+        assert_eq!(sum1, minsum1);
+        assert_eq!(num_vec_test1, [1, 9, 9]);
+
+        let minsum2 = 19; // min num for this is 199
+        let mut num_vec_test2 = vec![1];
+        let sum1 = Solution::adv_to_minsum(&mut num_vec_test2, 1, minsum1);
+        assert_eq!(sum1, minsum2);
+        assert_eq!(num_vec_test2, [1, 9, 9]);
+
+        let minsum3 = 19; // min num for this is 199
+        let mut num_vec_test3 = vec![1, 2, 3];
+        let sum1 = Solution::adv_to_minsum(&mut num_vec_test3, 6, minsum3);
+        assert_eq!(sum1, minsum3);
+        assert_eq!(num_vec_test3, [1, 9, 9]);
     }
 }
