@@ -85,7 +85,7 @@ impl Solution {
             sum -= 9;
             if i == 0 {
                 num.push(0);
-                num[0] = 0; // this will be incremented later
+                // num[0] = 0; // this will be incremented later
             } else {
                 i -= 1;
             }
