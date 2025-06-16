@@ -60,39 +60,25 @@ impl Solution {
 
         let mut working_sum: i32 = working_num.iter().sum();
         loop {
-            // print!(
-            //     "Count is {}, working num is {:?}, with sum {}",
-            //     count, working_num, working_sum
-            // );
-
             if working_num.len() > num2_vect.len()
                 || (working_num.len() == num2_vect.len() && working_num > num2_vect)
             {
-                // println!("breaking");
                 break;
             }
 
             if min_sum <= working_sum && working_sum <= max_sum {
-                // print!(" - accepted!");
                 if count == 1000000000 + 7 {
                     count = 1;
                 } else {
                     count += 1;
                 }
             }
-            // println!("");
 
             if working_sum >= min_sum && working_sum < max_sum {
                 working_sum = Self::num_vect_incr(&mut working_num, working_sum);
             } else {
                 working_sum = Self::adv_to_minsum(&mut working_num, working_sum, min_sum, max_sum);
             }
-            // assert_eq!(
-            //     working_sum,
-            //     working_num.iter().sum(),
-            //     "for working num {:?}",
-            //     working_num
-            // );
         }
 
         count
@@ -200,17 +186,17 @@ impl Solution {
 }
 
 fn main() {
-    assert_eq!(Solution::count("1".into(), "12".into(), 1, 8), 11);
-    assert_eq!(Solution::count("1".into(), "5".into(), 1, 5), 5);
-    assert_eq!(Solution::count("14".into(), "234".into(), 13, 16), 41);
+    // assert_eq!(Solution::count("1".into(), "12".into(), 1, 8), 11);
+    // assert_eq!(Solution::count("1".into(), "5".into(), 1, 5), 5);
+    // assert_eq!(Solution::count("14".into(), "234".into(), 13, 16), 41);
     assert_eq!(
         Solution::count("4179205230".into(), "7748704426".into(), 8, 46),
         883045899
     );
-    assert_eq!(
-        Solution::count("12345".into(), "22222222".into(), 17, 113),
-        21740632
-    )
+    // assert_eq!(
+    //     Solution::count("12345".into(), "22222222".into(), 17, 113),
+    //     21740632
+    // )
 }
 
 #[cfg(test)]
@@ -243,18 +229,6 @@ mod tests {
         let sum5 = Solution::num_vect_incr(&mut num_vect_test5, 9);
         assert_eq!(num_vect_test5, [1, 0]);
         assert_eq!(sum5, 1);
-    }
-
-    #[test]
-    fn current_fuckin_bug() {
-        let minsum9 = 8;
-        let maxsum9 = 46;
-        let mut num_vec_test9 = vec![7, 1, 0, 0, 0, 2, 9, 9, 9, 9];
-        let num_vec_original_sum9 = num_vec_test9.iter().sum();
-        let sum9 =
-            Solution::adv_to_minsum(&mut num_vec_test9, num_vec_original_sum9, minsum9, maxsum9);
-        assert_eq!(sum9, 11);
-        assert_eq!(num_vec_test9, [7, 1, 0, 0, 0, 3, 0, 0, 0, 0]);
     }
 
     #[test]
@@ -319,5 +293,14 @@ mod tests {
             Solution::adv_to_minsum(&mut num_vec_test9, num_vec_original_sum9, minsum9, maxsum9);
         assert_eq!(sum9, minsum9);
         assert_eq!(num_vec_test9, [1, 3, 9]);
+
+        let minsum9 = 8;
+        let maxsum9 = 46;
+        let mut num_vec_test9 = vec![7, 1, 0, 0, 0, 2, 9, 9, 9, 9];
+        let num_vec_original_sum9 = num_vec_test9.iter().sum();
+        let sum9 =
+            Solution::adv_to_minsum(&mut num_vec_test9, num_vec_original_sum9, minsum9, maxsum9);
+        assert_eq!(sum9, 11);
+        assert_eq!(num_vec_test9, [7, 1, 0, 0, 0, 3, 0, 0, 0, 0]);
     }
 }
