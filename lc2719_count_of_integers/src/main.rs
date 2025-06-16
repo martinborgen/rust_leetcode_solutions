@@ -60,18 +60,39 @@ impl Solution {
 
         let mut working_sum: i32 = working_num.iter().sum();
         loop {
+            // print!(
+            //     "Count is {}, working num is {:?}, with sum {}",
+            //     count, working_num, working_sum
+            // );
+
+            if working_num.len() > num2_vect.len()
+                || (working_num.len() == num2_vect.len() && working_num > num2_vect)
+            {
+                // println!("breaking");
+                break;
+            }
+
             if min_sum <= working_sum && working_sum <= max_sum {
+                // print!(" - accepted!");
                 if count == 1000000000 + 7 {
                     count = 1;
                 } else {
                     count += 1;
                 }
             }
+            // println!("");
 
-            if working_num == num2_vect {
-                break;
+            if working_sum >= min_sum && working_sum < max_sum {
+                working_sum = Self::num_vect_incr(&mut working_num, working_sum);
+            } else {
+                working_sum = Self::adv_to_minsum(&mut working_num, working_sum, min_sum, max_sum);
             }
-            working_sum = Self::num_vect_incr(&mut working_num, working_sum);
+            // assert_eq!(
+            //     working_sum,
+            //     working_num.iter().sum(),
+            //     "for working num {:?}",
+            //     working_num
+            // );
         }
 
         count
@@ -104,28 +125,39 @@ impl Solution {
         let mut diff_min = min_sum - sum;
         let mut diff_max = max_sum - sum;
 
-        if diff_max < 0 {
+        if diff_min < 0 && diff_max > 0 {
+            // we're between something. Just increment, and see what happens.
+            sum = Self::num_vect_incr(num, sum);
+        }
+
+        diff_min = min_sum - sum;
+        diff_max = max_sum - sum;
+        if diff_max <= 0 {
             // means we should flip a few digits to zeros
             let mut carry = 0;
             let mut i = num.len() - 1;
 
             // this loop only flips digits to zero (ten). It might not be necessary to flip all digits.
-            while diff_min - carry < 0 && i > 0 {
+            while (diff_min - carry < 0) && (diff_max - carry < 1) {
                 // num[i] increased so it becomes 10 and rolls over to 0
                 diff_min += num[i];
+                diff_max += num[i];
                 sum -= num[i];
                 num[i] = 0;
                 carry = 1; // we're flipping nums so carry is one if we flip. We use 'it up every flip' though, so never more than one
-                i -= 1;
-
-                // print!("num: ");
-                // for x in num.iter() {
-                //     print!("{x}");
-                // }
-                // print!("carry is {carry} \n");
+                if i == 0 {
+                    num.push(0);
+                    break;
+                } else {
+                    i -= 1;
+                }
             }
 
-            if carry > 0 {
+            if carry + num[i] > 9 && i == 0 {
+                num.push(0);
+                num[i] = 1;
+                sum = 1;
+            } else if carry > 0 {
                 // just add from current spot.
                 while num[i] == 9 {
                     sum -= 9;
@@ -141,7 +173,7 @@ impl Solution {
             }
         }
 
-        let mut diff_min = min_sum - sum;
+        diff_min = min_sum - sum;
         if diff_min > 0 {
             let mut i = num.len() - 1;
             while i > 0 && diff_min > 0 {
@@ -153,7 +185,6 @@ impl Solution {
             }
 
             if diff_min > 0 {
-                // num[0] will be just nines in this case, right?
                 while diff_min + num[i] > 9 {
                     num.push(9);
                     diff_min -= 9;
@@ -161,6 +192,7 @@ impl Solution {
                 }
 
                 num[i] += diff_min;
+                sum += diff_min;
             }
         }
         sum
@@ -206,6 +238,23 @@ mod tests {
         let sum4 = Solution::num_vect_incr(&mut num_vect_test4, 27);
         assert_eq!(num_vect_test4, [1, 0, 0, 0]);
         assert_eq!(sum4, 1);
+
+        let mut num_vect_test5 = vec![9];
+        let sum5 = Solution::num_vect_incr(&mut num_vect_test5, 9);
+        assert_eq!(num_vect_test5, [1, 0]);
+        assert_eq!(sum5, 1);
+    }
+
+    #[test]
+    fn current_fuckin_bug() {
+        let minsum9 = 8;
+        let maxsum9 = 46;
+        let mut num_vec_test9 = vec![7, 1, 0, 0, 0, 2, 9, 9, 9, 9];
+        let num_vec_original_sum9 = num_vec_test9.iter().sum();
+        let sum9 =
+            Solution::adv_to_minsum(&mut num_vec_test9, num_vec_original_sum9, minsum9, maxsum9);
+        assert_eq!(sum9, 11);
+        assert_eq!(num_vec_test9, [7, 1, 0, 0, 0, 3, 0, 0, 0, 0]);
     }
 
     #[test]
@@ -240,5 +289,35 @@ mod tests {
         let sum5 = Solution::adv_to_minsum(&mut num_vec_test5, 25, minsum5, maxsum1);
         assert_eq!(sum5, minsum5);
         assert_eq!(num_vec_test5, [1, 0, 9, 9]);
+
+        let minsum6 = 1;
+        let mut num_vec_test6 = vec![9];
+        let sum6 = Solution::adv_to_minsum(&mut num_vec_test6, 9, minsum6, maxsum1);
+        assert_eq!(sum6, minsum6);
+        assert_eq!(num_vec_test6, [1, 0]);
+
+        let minsum7 = 2;
+        let mut num_vec_test7 = vec![9];
+        let sum7 = Solution::adv_to_minsum(&mut num_vec_test7, 9, minsum7, maxsum1);
+        assert_eq!(sum7, minsum7);
+        assert_eq!(num_vec_test7, [1, 1]);
+
+        let minsum8 = 13;
+        let maxsum8 = 16;
+        let mut num_vec_test8 = vec![7, 9];
+        let num_vec_original_sum8 = num_vec_test8.iter().sum();
+        let sum8 =
+            Solution::adv_to_minsum(&mut num_vec_test8, num_vec_original_sum8, minsum8, maxsum8);
+        assert_eq!(sum8, minsum8);
+        assert_eq!(num_vec_test8, [8, 5]);
+
+        let minsum9 = 13;
+        let maxsum9 = 16;
+        let mut num_vec_test9 = vec![9, 7];
+        let num_vec_original_sum9 = num_vec_test9.iter().sum();
+        let sum9 =
+            Solution::adv_to_minsum(&mut num_vec_test9, num_vec_original_sum9, minsum9, maxsum9);
+        assert_eq!(sum9, minsum9);
+        assert_eq!(num_vec_test9, [1, 3, 9]);
     }
 }
