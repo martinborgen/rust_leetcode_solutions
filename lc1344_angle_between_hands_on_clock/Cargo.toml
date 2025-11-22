@@ -1,0 +1,6 @@
+[package]
+name = "lc1344_angle_between_hands_on_clock"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
